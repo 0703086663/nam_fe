@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { fetchData } from "../utils/fetchData";
 import { FaEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Campaign = () => {
   const [data, setData] = useState([]);
-
+  const navigate = useNavigate();
   const fetchDataFromAPI = async () => {
     const url = "http://localhost:9999/api/campaign";
     const result = await fetchData(url);
@@ -38,9 +39,16 @@ const Campaign = () => {
                   <td className="border-b border-[#eee] py-5 px-4">
                     <div className="flex items-center space-x-3.5">
                       <a
-                        href={`/survey?campaignId=${item._id}&campaignName=${item.name}`}
+                      // href={`/survey?campaignId=${item._id}&campaignName=${item.name}`}
                       >
-                        <button className="hover:scale-125 transition-all hover:text-blue-600">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/survey?campaignId=${item._id}&campaignName=${item.name}`
+                            )
+                          }
+                          className="hover:scale-125 transition-all hover:text-blue-600"
+                        >
                           <FaEye />
                         </button>
                       </a>
