@@ -1,17 +1,33 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { useState } from "React";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./pages/Layout";
+import Campaign from "./pages/Campaign";
+import Field from "./pages/Field";
+import Response from "./pages/Response";
+import Survey from "./pages/Survey";
+import "./index.css";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export default function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* {!loggedIn && <Route path="/" element={<Login />} />} */}
+
+        {loggedIn && (
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Campaign />} />
+            <Route path="field" element={<Field />} />
+            <Route path="response" element={<Response />} />
+            <Route path="survey" element={<Survey />} />
+          </Route>
+        )}
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
