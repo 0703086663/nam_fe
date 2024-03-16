@@ -1,31 +1,51 @@
-import { useState, StrictMode, useContext, useEffect } from "react";
-import AuthContext from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-  const { currentUser, login } = useContext(AuthContext);
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
-    login({ email, password });
-  };
+    var name = document.getElementById("name").value;
 
-  useEffect(() => {
-    if (currentUser) {
-      navigate(`/`);
+    const response = await fetch("http://localhost:9999/api/user/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, name }),
+    });
+
+    if (response.data) {
+      navigate(`/login`);
     }
-  }, currentUser);
 
+    if (!response.ok) {
+      throw new Error("Register failed");
+    }
+  };
   return (
     <section class="dark:bg-gray-900 relative">
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto h-[calc(100vh-100px)] lg:py-0">
         <div class="w-full bg-white rounded-lg shadow-2xl dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 class="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Login
+              Register
             </h1>
             <form class="space-y-4 md:space-y-6">
+              <div>
+                <label
+                  for="name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  name
+                </label>
+                <input
+                  type="name"
+                  name="name"
+                  id="name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                  autocomplete
+                />
+              </div>
               <div>
                 <label
                   for="email"
@@ -61,20 +81,11 @@ const Login = () => {
               </div>
 
               <button
-                onClick={handleLogin}
+                onClick={handleRegister}
                 class="w-full text-white bg-sky-600 hover:bg-sky-700 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
               >
-                Login
+                Register
               </button>
-              <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                Not have an account?{" "}
-                <a
-                  onClick={() => navigate("/register")}
-                  class="font-medium text-sky-600 hover:underline dark:text-sky-500"
-                >
-                  Register here
-                </a>
-              </p>
             </form>
           </div>
         </div>
@@ -82,4 +93,4 @@ const Login = () => {
     </section>
   );
 };
-export default Login;
+export default Register;

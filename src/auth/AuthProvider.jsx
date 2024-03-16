@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
   // Function to handle user login
   const login = async (credentials) => {
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("http://localhost:9999/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -19,31 +19,39 @@ const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      setCurrentUser(data.user);
-      setIsAuthenticated(true);
-      // Store authentication token securely (e.g., local storage with HttpOnly flag)
-      localStorage.setItem("authToken", data.token);
+      console.log("dataaaa", data);
+      if (data && data.data) {
+        setCurrentUser({ email: data.data.email, name: data.data.name });
+        setIsAuthenticated(true);
+        localStorage.setItem(
+          "authToken",
+          JSON.stringify({
+            email: data.data.email,
+            name: data.data.name,
+            token: data.data.token,
+          })
+        );
+        return {
+          email: data.data.email,
+          name: data.data.name,
+          token: data.data.token,
+        };
+      }
     } catch (error) {
       console.error("Login error:", error);
-      // Handle login errors gracefully (e.g., display error message)
     }
   };
 
-  // Function to handle user logout
   const logout = () => {
     setCurrentUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem("authToken");
-    // Send logout request to server if necessary (e.g., to invalidate tokens)
   };
 
-  // Check for existing authentication on component mount
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    if (storedToken) {
-      // Validate token on the server if necessary
-      // Assuming a successful validation (replace with your validation logic)
-      setCurrentUser({ username: "example" }); // Replace with actual user data
+    const authToken = localStorage.getItem("authToken");
+    if (authToken) {
+      setCurrentUser({ email: authToken?.email, name: authToken?.name }); // Replace with actual user data
       setIsAuthenticated(true);
     }
   }, []);
