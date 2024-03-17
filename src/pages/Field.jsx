@@ -164,8 +164,8 @@ const Field = () => {
                       <></>
                     ) : (
                       <ul className="list-disc">
-                        {item.options.choices.map((choice, index) => (
-                          <li key={index}>{choice.name}</li>
+                        {item.options.map((choice, index) => (
+                          <li key={index}>{choice}</li>
                         ))}
                       </ul>
                     )}

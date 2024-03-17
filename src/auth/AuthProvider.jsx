@@ -20,13 +20,18 @@ const AuthProvider = ({ children }) => {
 
       const data = await response.json();
       if (data && data.data) {
-        setCurrentUser({ email: data.data.email, name: data.data.name });
+        setCurrentUser({
+          email: data.data.email,
+          name: data.data.name,
+          id: data.data._id,
+        });
         setIsAuthenticated(true);
         localStorage.setItem(
           "authToken",
           JSON.stringify({
             email: data.data.email,
             name: data.data.name,
+            id: data.data._id,
             token: data.data.token,
           })
         );
@@ -48,9 +53,13 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const authToken = localStorage.getItem("authToken");
+    const authToken = JSON.parse(localStorage.getItem("authToken"));
     if (authToken) {
-      setCurrentUser({ email: authToken?.email, name: authToken?.name }); // Replace with actual user data
+      setCurrentUser({
+        email: authToken?.email,
+        name: authToken?.name,
+        id: authToken?.id,
+      }); // Replace with actual user data
       setIsAuthenticated(true);
     }
   }, []);

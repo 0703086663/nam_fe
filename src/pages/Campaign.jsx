@@ -1,29 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { fetchData, createData, updateData } from "../utils/fetchData";
+import React, { useState, useEffect, useContext } from "react";
+import {
+  fetchData,
+  createData,
+  updateData,
+  deleteData,
+} from "../utils/fetchData";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
+import AuthContext from "../auth/AuthContext";
 
 const Campaign = () => {
+  const { currentUser } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState([]);
   const [values, setValues] = useState();
-  const [method, setMethod] = useState("create");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const fetchDataFromAPI = async () => {
     const url = "http://localhost:9999/api/campaign";
     const result = await fetchData(url);
-    setData(result);
+    setData(result.filter((v) => v.owner_id === currentUser.id));
   };
 
   const handleOpenModal = (data) => {
     setIsOpen(true);
-    setMethod("create");
+    setValues(null);
   };
   const handleCloseModal = () => {
     setIsOpen(false);
-    // setIsShownOptions(false);
   };
 
   const handleSubmit = async (e) => {
@@ -31,7 +36,7 @@ const Campaign = () => {
     try {
       let result;
       setLoading(true);
-      if (values?.id) {
+      if (!values?._id) {
         result = await createData("http://localhost:9999/api/campaign/create", {
           name: values.name,
         });
@@ -43,11 +48,9 @@ const Campaign = () => {
           }
         );
       }
-      if (result) {
-        setIsOpen(false);
-      }
     } catch {
     } finally {
+      setIsOpen(false);
       setLoading(false);
     }
   };
@@ -57,12 +60,7 @@ const Campaign = () => {
 
     try {
       setLoading(true);
-      const result = await createData(
-        `http://localhost:9999/api/campaign/delete/${data._id}`
-      );
-      if (result) {
-        setIsOpen(false);
-      }
+      await deleteData(`http://localhost:9999/api/campaign/delete/${data._id}`);
     } catch {
     } finally {
       setLoading(false);
@@ -122,7 +120,6 @@ const Campaign = () => {
                           onClick={() => {
                             setValues(item);
                             setIsOpen(true);
-                            setMethod("update");
                           }}
                           className="hover:scale-125 transition-all hover:text-blue-600"
                         >
@@ -141,40 +138,6 @@ const Campaign = () => {
                       </a>
                     </div>
                   </td>
-                  <Modal isOpen={isOpen} onClose={handleCloseModal}>
-                    <form onSubmit={handleSubmit}>
-                      <h1 className="text-center font-semibold text-2xl pb-3 capitalize">
-                        {method}
-                      </h1>
-                      <div className="mb-4">
-                        <label
-                          className="block text-gray-700 text-sm font-bold mb-2"
-                          htmlFor="name"
-                        >
-                          Name
-                        </label>
-                        <input
-                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          id="name"
-                          name="name"
-                          type="text"
-                          value={values?.name}
-                          required
-                          onChange={(e) =>
-                            setValues({ ...values, name: e.target.value })
-                          }
-                        />
-                      </div>
-                      <div className="flex justify-end">
-                        <button
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                          type="submit"
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </form>
-                  </Modal>
                 </tr>
               ))
             ) : (
@@ -189,6 +152,38 @@ const Campaign = () => {
             )}
           </tbody>
         </table>
+        <Modal isOpen={isOpen} onClose={handleCloseModal}>
+          <form onSubmit={handleSubmit}>
+            <h1 className="text-center font-semibold text-2xl pb-3 capitalize">
+              {values?._id ? "update" : "create"}
+            </h1>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="name"
+              >
+                Name
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="name"
+                name="name"
+                type="text"
+                value={values?.name}
+                required
+                onChange={(e) => setValues({ ...values, name: e.target.value })}
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </Modal>
       </div>
     </div>
   );
