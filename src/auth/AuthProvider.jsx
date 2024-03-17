@@ -19,7 +19,6 @@ const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      console.log("dataaaa", data);
       if (data && data.data) {
         setCurrentUser({ email: data.data.email, name: data.data.name });
         setIsAuthenticated(true);

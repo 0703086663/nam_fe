@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Navigate } from "react-router-dom"; // Import useNavigate
 import AuthContext from "./AuthContext";
 
 const AuthGuard = ({ children }) => {
