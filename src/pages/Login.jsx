@@ -15,7 +15,7 @@ const Login = () => {
     if (currentUser) {
       navigate(`/`);
     }
-  }, currentUser);
+  }, [currentUser]);
 
   return (
     <section class="dark:bg-gray-900 relative">

@@ -48,7 +48,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setCurrentUser(null);
-    setIsAuthenticated(false);
+    // setIsAuthenticated(false);
     localStorage.removeItem("authToken");
   };
 
@@ -60,13 +60,17 @@ const AuthProvider = ({ children }) => {
         name: authToken?.name,
         id: authToken?.id,
       }); // Replace with actual user data
-      setIsAuthenticated(true);
     }
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, isAuthenticated, login, logout }}
+      value={{
+        isAuthenticated,
+        currentUser: JSON.parse(localStorage.getItem("authToken")),
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

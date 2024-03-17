@@ -72,7 +72,7 @@ const Survey = () => {
 
   const fetchDataFromAPI = async () => {
     if (campaignId) {
-      const url = `http://localhost:9999/api/survey`;
+      const url = `http://localhost:9999/api/campaign/${campaignId}/surveys`;
 
       const result = await fetchData(url);
       setData(result);
@@ -124,7 +124,7 @@ const Survey = () => {
                   <td className="border-b border-[#eee] py-5 px-4">
                     <div className="flex items-center space-x-3.5">
                       <a
-                        href={`/field?surveyId=${item._id}&surveyName=${item.name}`}
+                      // href={`/field?surveyId=${item._id}&surveyName=${item.name}`}
                       >
                         <button
                           className="hover:scale-125 text-gray-500 transition-all hover:text-green-600"
@@ -134,7 +134,7 @@ const Survey = () => {
                         </button>
                       </a>
                       <a
-                        href={`/response?surveyId=${item._id}&surveyName=${item.name}`}
+                        href={`/field?surveyId=${item._id}&surveyName=${item.name}`}
                       >
                         <button
                           className="hover:scale-125 text-gray-500 transition-all hover:text-blue-500"

@@ -3,8 +3,9 @@ import { Navigate } from "react-router-dom"; // Import useNavigate
 import AuthContext from "./AuthContext";
 
 const AuthGuard = ({ children }) => {
-  const { isAuthenticated } = useContext(AuthContext);
-  if (!isAuthenticated) {
+  const { currentUser, isAuthenticated } = useContext(AuthContext);
+
+  if (!currentUser) {
     return <Navigate to="/login" replace />; // Redirect to login on unauthorized access
   }
 

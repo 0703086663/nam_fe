@@ -21,10 +21,10 @@ import AuthGuard from "./auth/Authorize";
 import Header from "./components/Header";
 
 export default function App() {
-  const { currentUser, isAuthenticated } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   return (
     <BrowserRouter>
-      {isAuthenticated && <Header />}
+      {currentUser && <Header />}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
