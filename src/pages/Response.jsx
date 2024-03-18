@@ -14,47 +14,46 @@ const Response = () => {
   const [data, setData] = useState([]);
   const [fields, setFields] = useState([]);
 
-  const fetchReponseFromAPI = async () => {
+  const fetchReponseAndFieldFromAPI = async () => {
     if (surveyId) {
-      const url = `http://localhost:9999/api/response/all/${surveyId}`;
-      const result = await fetchData(url);
-      console.log("Response", result.responses);
-      setData(result.responses || []);
-    } else {
-      return setData([]);
-    }
-  };
+      const urlResponses = `http://localhost:9999/api/survey/${surveyId}/responses`;
+      const urlField = `http://localhost:9999/api/survey/${surveyId}/fields`;
+      const responses = await fetchData(urlResponses);
+      const fields = await fetchData(urlField);
+      setData(responses || []);
+      setFields(fields || []);
 
-  const fetchFieldsFromAPI = async () => {
-    if (surveyId) {
-      const url = `http://localhost:9999/api/survey/${surveyId}`;
-      const result = await fetchData(url);
-      console.log("Fields", result.fields);
-      setFields(result.fields || []);
-    } else {
-      return setFields([]);
-    }
-  };
+      const transformData = responses.reduce((acc, curr) => {
+        const index = acc.findIndex((obj) => obj.owner_id === curr.owner_id);
+        if (index !== -1) {
+          acc[index][curr.field_id] = curr.content;
+        } else {
+          const newObj = {
+            [curr.field_id]: curr.content,
+            owner_id: curr.owner_id,
+          };
+          acc.push(newObj);
+        }
+        return acc;
+      }, []);
 
-  const handleDelete = async (surveyId) => {
-    try {
-      const url = `http://localhost:9999/api/response/${surveyId}`;
-      const response = await axios.delete(url);
-      if (response.status === 200) {
-        alert("Delete successful");
-        fetchReponseFromAPI();
-      } else {
-        alert("Delete failed");
-      }
-    } catch (error) {
-      alert("Error deleting survey");
+      const addDetailUser = await Promise.all(
+        transformData.map(async (v) => {
+          try {
+            const user = await fetchData(
+              `http://localhost:9999/api/user/${v.owner_id}`
+            );
+            return { ...v, name: user.name, email: user.email };
+          } catch (error) {}
+        })
+      );
+
+      setData(addDetailUser || []);
     }
   };
 
   useEffect(() => {
-    fetchReponseFromAPI();
-    fetchFieldsFromAPI();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchReponseAndFieldFromAPI();
   }, [surveyId]);
 
   return (
@@ -76,54 +75,39 @@ const Response = () => {
                     {field.name}
                   </th>
                 ))}
-              <th className="py-4 px-4 font-medium text-black">Actions</th>
+              <th className="min-w-[220px] py-4 px-4 font-medium text-black xl:pl-11">
+                Name
+              </th>
+              <th className="min-w-[220px] py-4 px-4 font-medium text-black xl:pl-11">
+                Email
+              </th>
             </tr>
           </thead>
           <tbody>
             {data && data.length > 0 ? (
               data.map((item, index) => (
                 <tr key={index}>
-                  {fields.map((field, index) => {
-                    const matchingKey = Object.keys(item.fields).find(
-                      (key) => field.name === key
-                    );
-                    if (matchingKey !== undefined) {
-                      let value = item.fields[matchingKey];
-                      if (typeof value === "object") {
-                        // Handle object value
-                        // For example, convert it to a string
-                        value = Object.keys(value)
-                          .filter((key) => key !== "id")
-                          .map((key) => `${key}: ${value[key]}`)
-                          .join("\n");
-                      }
-                      return (
-                        <td
-                          key={index}
-                          className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11"
-                        >
-                          <h5 className="text-black">{value.toString()}</h5>
-                        </td>
-                      );
-                    } else {
-                      return (
-                        <td
-                          key={index}
-                          className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11"
-                        ></td>
-                      );
-                    }
-                  })}
-
-                  <td className="border-b border-[#eee] py-5 px-4">
-                    <div className="flex items-center space-x-3.5">
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="hover:scale-125 transition-all hover:text-red-500"
+                  {fields?.map((field, index) => {
+                    return (
+                      <td
+                        key={index}
+                        className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11"
                       >
-                        <FaTrashAlt />
-                      </button>
-                    </div>
+                        <h5 className="text-black">{item[field._id]}</h5>
+                      </td>
+                    );
+                  })}
+                  <td
+                    key={index}
+                    className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11"
+                  >
+                    <h5 className="text-black">{item.name}</h5>
+                  </td>
+                  <td
+                    key={index}
+                    className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11"
+                  >
+                    <h5 className="text-black">{item.email}</h5>
                   </td>
                 </tr>
               ))
