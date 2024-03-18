@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { fetchData } from "../utils/fetchData";
+import { fetchData, deleteData } from "../utils/fetchData";
 import formatDate from "../utils/formatDate";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 
 const Response = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const surveyId = queryParams.get("surveyId");
   const surveyName = queryParams.get("surveyName");
+  const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState([]);
   const [fields, setFields] = useState([]);
@@ -31,6 +32,7 @@ const Response = () => {
           const newObj = {
             [curr.field_id]: curr.content,
             owner_id: curr.owner_id,
+            _id: curr._id,
           };
           acc.push(newObj);
         }
@@ -47,14 +49,28 @@ const Response = () => {
           } catch (error) {}
         })
       );
-
+      console.log(addDetailUser);
       setData(addDetailUser || []);
     }
   };
 
+  const handleDelete = async (e, data) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      await deleteData(`http://localhost:9999/api/response/delete/${data._id}`);
+    } catch {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchReponseAndFieldFromAPI();
-  }, [surveyId]);
+    if (!loading) {
+      fetchReponseAndFieldFromAPI();
+    }
+  }, [surveyId, loading]);
 
   return (
     <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
@@ -80,6 +96,9 @@ const Response = () => {
               </th>
               <th className="min-w-[220px] py-4 px-4 font-medium text-black xl:pl-11">
                 Email
+              </th>
+              <th className="min-w-[220px] py-4 px-4 font-medium text-black xl:pl-11">
+                Actions
               </th>
             </tr>
           </thead>
@@ -108,6 +127,16 @@ const Response = () => {
                     className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11"
                   >
                     <h5 className="text-black">{item.email}</h5>
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4">
+                    <button
+                      onClick={(e) => {
+                        handleDelete(e, item);
+                      }}
+                      className="hover:scale-125 text-gray-500 transition-all mb-2 hover:text-red-600"
+                    >
+                      <FaTrash />
+                    </button>
                   </td>
                 </tr>
               ))
