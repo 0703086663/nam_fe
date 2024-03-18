@@ -136,9 +136,11 @@ const Field = () => {
 
   return (
     <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
-      <h1 className="pb-10 text-3xl font-semibold">Field Table</h1>
-      <div className="flex justify-between pb-2">
-        <h1 className="text-lg text-gray-500">{surveyName}</h1>
+      <h1 className="text-3xl text-black pb-10 text-center">
+        Survey: {surveyName}
+      </h1>
+      <div className="flex justify-between pb-10">
+        <h1 className="text-3xl font-semibold">Field Table</h1>
         <button
           onClick={() => handleOpenModal("create")}
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
