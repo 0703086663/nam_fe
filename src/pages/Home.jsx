@@ -47,7 +47,7 @@ const Home = () => {
                   return (
                     <li
                       key={index}
-                      className="py-2 cursor-pointer hover:text-black"
+                      className="py-2 cursor-pointer hover:text-black hover:underline ring-offset-4"
                       onClick={() =>
                         navigate(
                           `/survey/${survey._id}?surveyName=${survey.name}${

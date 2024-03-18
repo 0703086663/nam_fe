@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import AuthContext from "../auth/AuthContext";
 import { fetchData, createData } from "../utils/fetchData";
 import { useLocation, useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 const CreateResponse = () => {
   const { currentUser } = useContext(AuthContext);
@@ -62,7 +63,7 @@ const CreateResponse = () => {
       const url = `http://localhost:9999/api/survey/${surveyId}/fields`;
       var result = await fetchData(url);
 
-      const updatedResult = result.map((field) => {
+      const updatedResult = result?.map((field) => {
         if (field.type === "singleSelect" || field.type === "multipleSelects") {
           const optionsArray = field.options.split(",");
           return { ...field, options: optionsArray };
@@ -79,8 +80,12 @@ const CreateResponse = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const reponseId = uuidv4().split("-")[0];
       for (const v of values) {
-        await createData(`http://localhost:9999/api/response/create`, v);
+        await createData(`http://localhost:9999/api/response/create`, {
+          ...v,
+          response_id: reponseId,
+        });
       }
     } catch (error) {
     } finally {

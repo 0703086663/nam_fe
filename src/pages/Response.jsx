@@ -25,13 +25,18 @@ const Response = () => {
       setFields(fields || []);
 
       const transformData = responses.reduce((acc, curr) => {
-        const index = acc.findIndex((obj) => obj.owner_id === curr.owner_id);
+        const index = acc.findIndex(
+          (obj) =>
+            obj.owner_id === curr.owner_id &&
+            obj.response_id === curr.response_id
+        );
         if (index !== -1) {
           acc[index][curr.field_id] = curr.content;
         } else {
           const newObj = {
             [curr.field_id]: curr.content,
             owner_id: curr.owner_id,
+            response_id: curr.response_id,
             _id: curr._id,
           };
           acc.push(newObj);
