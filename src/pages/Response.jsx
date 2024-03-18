@@ -39,6 +39,8 @@ const Response = () => {
         return acc;
       }, []);
 
+      console.log(transformData);
+
       const addDetailUser = await Promise.all(
         transformData.map(async (v) => {
           try {

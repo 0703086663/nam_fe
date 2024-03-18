@@ -2,10 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from "../auth/AuthContext";
 import { fetchData, createData } from "../utils/fetchData";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const CreateResponse = () => {
   const { currentUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const { surveyId } = useParams();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -13,11 +14,47 @@ const CreateResponse = () => {
   const [loading, setLoading] = useState(false);
   const surveyName = queryParams.get("surveyName");
   const surveyDescription = queryParams.get("surveyDescription");
+  const [values, setValues] = useState([]);
 
-  const examplePayload = {
-    content: "3",
-    survey_id: "recYZP26BhF3XrKf5",
-    field_id: "recJZtaKu2AEeZhfr",
+  const handleChange = (e, fieldId, opt) => {
+    const isChecked = e.target.checked;
+    const optionValue = e.target.value;
+    let contentArray;
+    const index = values.findIndex((value) => value.field_id === fieldId);
+
+    if (index !== -1) {
+      const updatedValues = [...values];
+      contentArray = updatedValues[index].content.split(",");
+      console.log(contentArray);
+      if (opt) {
+        if (isChecked) {
+          contentArray.push(opt);
+        } else {
+          contentArray = contentArray.filter((item) => item !== opt);
+        }
+      } else {
+        const optionIndex = contentArray.indexOf(optionValue);
+        if (optionIndex !== -1) {
+          contentArray.splice(optionIndex, 1);
+        }
+      }
+
+      updatedValues[index] = {
+        ...updatedValues[index],
+        content: opt ? contentArray.join(",") : optionValue,
+      };
+
+      setValues(updatedValues);
+    } else {
+      setValues((prevValues) => [
+        ...prevValues,
+        {
+          survey_id: surveyId,
+          content: opt || optionValue,
+          field_id: fieldId,
+        },
+      ]);
+    }
   };
 
   const fetchDataFromAPI = async () => {
@@ -41,6 +78,15 @@ const CreateResponse = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      for (const v of values) {
+        await createData(`http://localhost:9999/api/response/create`, v);
+      }
+    } catch (error) {
+    } finally {
+      navigate("/");
+      fetchDataFromAPI();
+    }
   };
 
   useEffect(() => {
@@ -78,6 +124,7 @@ const CreateResponse = () => {
                         <input
                           type="text"
                           name={field._id}
+                          onChange={(e) => handleChange(e, field._id)}
                           className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5"
                         />
                       )}
@@ -85,8 +132,10 @@ const CreateResponse = () => {
                         <select
                           name={field._id}
                           id=""
+                          onChange={(e) => handleChange(e, field._id)}
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         >
+                          <option></option>
                           {field.options.map((opt, index) => {
                             return (
                               <option value={opt} key={index}>
@@ -104,6 +153,9 @@ const CreateResponse = () => {
                                 type="checkbox"
                                 name={field._id}
                                 value={field.name}
+                                onChange={(e) =>
+                                  handleChange(e, field._id, opt)
+                                }
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                               />
                               <label className="ms-2 text-sm text-gray-900">

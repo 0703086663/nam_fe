@@ -89,7 +89,7 @@ const Survey = () => {
     <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
       <div className="flex justify-between">
         <h1 className="pb-10 text-3xl font-semibold">
-        The survey of Campaign name : {campaignName}
+          The survey of Campaign name : {campaignName}
         </h1>
         <button
           onClick={() => handleOpenModal("create")}
@@ -124,7 +124,7 @@ const Survey = () => {
                   <td className="border-b border-[#eee] py-5 px-4">
                     <div className="flex items-center space-x-3.5">
                       <a
-                      href={`/response?surveyId=${item._id}&surveyName=${item.name}`}
+                        href={`/response?surveyId=${item._id}&surveyName=${item.name}`}
                       >
                         <button
                           className="hover:scale-125 text-gray-500 transition-all hover:text-green-600"
