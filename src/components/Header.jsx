@@ -4,21 +4,30 @@ import AuthContext from "../auth/AuthContext";
 const Header = () => {
   const { currentUser, logout } = useContext(AuthContext);
   return (
-    <header>
-      <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
-        <div class="flex flex-wrap justify-between items-center">
-          <a class="flex items-center">
+    <header className="shadow-lg border-b-gray-200 border-b">
+      <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+        <div className="flex flex-wrap justify-between items-center">
+          <a className="flex items-center" href="/">
             <img
               src="https://static.zerochan.net/Highschool.DxD.full.3600700.jpg"
-              class="mr-3 h-6 sm:h-9"
+              className="mr-3 h-6 sm:h-9"
               alt="Flowbite Logo"
             />
-            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+            <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
               Hentai Management
             </span>
           </a>
-          <div class="flex items-center lg:order-2">
-            <a class=" bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+          <div className="flex items-center lg:order-2">
+            <a
+              href="/campaign"
+              className="uppercase font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-gray-500 hover:text-black"
+            >
+              My campaigns
+            </a>
+            <a
+              href="/profile"
+              className="font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 text-gray-500 hover:text-black"
+            >
               {currentUser?.name}
             </a>
             <button

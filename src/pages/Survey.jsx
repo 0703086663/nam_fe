@@ -173,7 +173,7 @@ const Survey = () => {
                   <p>
                     There is no survey.{" "}
                     <a
-                      href="/"
+                      href="/campaign"
                       className="text-blue-500 hover:underline underline-offset-2"
                     >
                       Choose one Campaign to see

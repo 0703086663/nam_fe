@@ -7,12 +7,13 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import Layout from "./pages/Layout";
 import Campaign from "./pages/Campaign";
 import Field from "./pages/Field";
 import Response from "./pages/Response";
 import Survey from "./pages/Survey";
+import CreateResponse from "./pages/CreateResponse";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
 import Register from "./pages/Register";
 import "./index.css";
 import AuthProvider from "./auth/AuthProvider";
@@ -30,6 +31,22 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route
           path="/"
+          element={
+            <AuthGuard>
+              <Home />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/survey/:surveyId"
+          element={
+            <AuthGuard>
+              <CreateResponse />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/campaign"
           element={
             <AuthGuard>
               <Campaign />
