@@ -66,7 +66,9 @@ const Response = () => {
 
     try {
       setLoading(true);
-      await deleteData(`http://localhost:9999/api/response/delete/${data._id}`);
+      await deleteData(
+        `http://localhost:9999/api/response/delete/${data.response_id}`
+      );
     } catch {
     } finally {
       setLoading(false);
