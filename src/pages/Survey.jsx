@@ -87,10 +87,11 @@ const Survey = () => {
 
   return (
     <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
+      <h1 className="pb-10 text-3xl font-semibold text-center">
+        Campaign: {campaignName}
+      </h1>
       <div className="flex justify-between">
-        <h1 className="pb-10 text-3xl font-semibold">
-          Survey Table Name : {campaignName}
-        </h1>
+        <h1 className="pb-10 text-3xl font-semibold">Survey Table</h1>
         <button
           onClick={() => handleOpenModal("create")}
           className="h-10 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -123,9 +124,7 @@ const Survey = () => {
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4">
                     <div className="flex items-center space-x-3.5">
-                      <a
-                      // href={`/field?surveyId=${item._id}&surveyName=${item.name}`}
-                      >
+                      <a href="#!">
                         <button
                           className="hover:scale-125 text-gray-500 transition-all hover:text-green-600"
                           title="Response"
@@ -157,7 +156,7 @@ const Survey = () => {
                         onClick={(e) => {
                           handleDelete(e, item);
                         }}
-                        className="hover:scale-125 text-gray-500 transition-all mb-2 hover:text-black"
+                        className="hover:scale-125 text-gray-500 transition-all mb-2 hover:text-red-600"
                       >
                         <FaTrash />
                       </button>
@@ -220,7 +219,6 @@ const Survey = () => {
                 name="description"
                 type="text"
                 value={values?.description}
-                required
                 rows={4}
                 onChange={(e) =>
                   setValues({ ...values, description: e.target.value })

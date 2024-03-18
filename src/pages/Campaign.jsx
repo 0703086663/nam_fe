@@ -121,7 +121,7 @@ const Campaign = () => {
                             setValues(item);
                             setIsOpen(true);
                           }}
-                          className="hover:scale-125 transition-all hover:text-blue-600"
+                          className="hover:scale-125 transition-all hover:text-green-600"
                         >
                           <FaEdit />
                         </button>
@@ -131,7 +131,7 @@ const Campaign = () => {
                           onClick={(e) => {
                             handleDelete(e, item);
                           }}
-                          className="hover:scale-125 transition-all hover:text-blue-600"
+                          className="hover:scale-125 transition-all hover:text-red-600"
                         >
                           <FaTrash />
                         </button>

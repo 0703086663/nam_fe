@@ -1,4 +1,4 @@
-import { useState, StrictMode, useContext, useEffect } from "react";
+import { useContext } from "react";
 import { FaSignOutAlt } from "react-icons/fa";
 import AuthContext from "../auth/AuthContext";
 const Header = () => {
@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header>
       <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
-        <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+        <div class="flex flex-wrap justify-between items-center">
           <a class="flex items-center">
             <img
               src="https://static.zerochan.net/Highschool.DxD.full.3600700.jpg"

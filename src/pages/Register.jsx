@@ -1,11 +1,16 @@
 import { useNavigate } from "react-router-dom";
 const Register = () => {
   const navigate = useNavigate();
+
   const handleRegister = async (e) => {
     e.preventDefault();
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
     var name = document.getElementById("name").value;
+
+    if (!email || !password || !name) {
+      return alert("Missing information");
+    }
 
     const response = await fetch("http://localhost:9999/api/user/register", {
       method: "POST",
@@ -35,7 +40,7 @@ const Register = () => {
                   for="name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  name
+                  Name
                 </label>
                 <input
                   type="name"
@@ -86,6 +91,16 @@ const Register = () => {
               >
                 Register
               </button>
+              <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                Already have an account?{" "}
+                <a
+                  href="#!"
+                  onClick={() => navigate("/login")}
+                  class="font-medium text-sky-600 hover:underline dark:text-sky-500"
+                >
+                  Login here
+                </a>
+              </p>
             </form>
           </div>
         </div>

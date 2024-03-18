@@ -4,10 +4,16 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
   const { currentUser, login } = useContext(AuthContext);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      return alert("Missing information");
+    }
+
     login({ email, password });
   };
 

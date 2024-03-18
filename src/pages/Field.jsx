@@ -204,7 +204,7 @@ const Field = () => {
                         onClick={(e) => {
                           handleDelete(e, item);
                         }}
-                        className="hover:scale-125 text-gray-500 transition-all mb-2 hover:text-black"
+                        className="hover:scale-125 text-gray-500 transition-all hover:text-red-600"
                       >
                         <FaTrash />
                       </button>
