@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { fetchData, createData } from "../utils/fetchData";
+import { fetchData, createData, updateData } from "../utils/fetchData";
 import { FaEdit } from "react-icons/fa";
 import Modal from "../components/Modal";
 import axios from "axios";
@@ -70,29 +70,31 @@ const Field = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let requestBody = {
+      name,
+      type,
+      ...(type !== "singleLineText" &&
+        optionCustom.length > 0 && { options: optionCustom }),
+
+      ...(type === "rating" && {
+        options: {
+          choices: {
+            icon: "start",
+            max,
+          },
+        },
+      }),
+    };
     try {
       if (method === "create") {
-        let requestBody = {
-          name,
-          type,
-          ...(type !== "singleLineText" &&
-            optionCustom.length > 0 && { options: optionCustom }),
-
-          ...(type === "rating" && {
-            options: {
-              choices: {
-                icon: "start",
-                max,
-              },
-            },
-          }),
-        };
-
-        console.log("requestBody=====>", requestBody);
         await createData(
           `http://localhost:9999/api/field/create/${surveyId}`,
           requestBody
         );
+      } else if (method === "update") {
+        await updateData(`http://localhost:9999/api/field/${idUpdate}`, {
+          name,
+        });
       } else {
         throw new Error("Method undefined");
       }

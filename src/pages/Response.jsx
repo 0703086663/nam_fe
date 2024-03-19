@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchData } from "../utils/fetchData";
+import { fetchData, deleteData } from "../utils/fetchData";
 import formatDate from "../utils/formatDate";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -45,15 +45,11 @@ const Response = () => {
   const handleDelete = async (surveyId) => {
     try {
       const url = `http://localhost:9999/api/response/${surveyId}`;
-      const response = await axios.delete(url);
-      if (response.status === 200) {
-        alert("Delete successful");
-        fetchReponseFromAPI();
-      } else {
-        alert("Delete failed");
-      }
+      await deleteData(url);
     } catch (error) {
       alert("Error deleting survey");
+    } finally {
+      fetchReponseFromAPI();
     }
   };
 
@@ -123,7 +119,7 @@ const Response = () => {
                   >
                     {/* TODO */}
                     <a
-                      href="#!"
+                      href={`/question?surveyId=${surveyId}&fieldName=${field.name}`}
                       className="hover:underline hover:text-blue-600 ring-offset-4"
                     >
                       {field.name}
