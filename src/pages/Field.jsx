@@ -287,65 +287,69 @@ const Field = () => {
                               <option value="rating">Rating</option>
                             </select>
                           </div>
+
+                          {isShownOptions && (
+                            <div className="w-full">
+                              <label
+                                className="block text-gray-700 text-sm font-bold mb-2"
+                                htmlFor="type"
+                              >
+                                Options
+                              </label>
+                              <ul
+                                className="overflow-y-auto text-sm text-gray-700"
+                                aria-labelledby="dropdownSearchButton"
+                              >
+                                {optionCustom.map((option, index) => (
+                                  <li key={index}>
+                                    <div className="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer">
+                                      <input
+                                        type="text"
+                                        value={optionCustom.label}
+                                        onChange={(e) =>
+                                          handleOptionChange(
+                                            index,
+                                            e.target.value
+                                          )
+                                        }
+                                        className=" shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                      />
+                                    </div>
+                                  </li>
+                                ))}
+                              </ul>
+                              <button onClick={addOption}>Add Option</button>
+                            </div>
+                          )}
+                          {type === "rating" && (
+                            <div className="mb-4">
+                              <label
+                                className="block text-gray-700 text-sm font-bold mb-2"
+                                htmlFor="name"
+                              >
+                                Max
+                              </label>
+                              <input
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="name"
+                                name="name"
+                                type="number"
+                                // value={name}
+                                required
+                                onChange={(e) => setMax(e.target.value)}
+                              />
+                            </div>
+                          )}
+                          <div className="flex justify-end">
+                            <button
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                              type="submit"
+                            >
+                              Submit
+                            </button>
+                          </div>
                         </>
                       )}
-                      {isShownOptions && (
-                        <div className="w-full">
-                          <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="type"
-                          >
-                            Options
-                          </label>
-                          <ul
-                            className="overflow-y-auto text-sm text-gray-700"
-                            aria-labelledby="dropdownSearchButton"
-                          >
-                            {optionCustom.map((option, index) => (
-                              <li key={index}>
-                                <div className="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer">
-                                  <input
-                                    type="text"
-                                    value={optionCustom.label}
-                                    onChange={(e) =>
-                                      handleOptionChange(index, e.target.value)
-                                    }
-                                    className=" shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                  />
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
-                          <button onClick={addOption}>Add Option</button>
-                        </div>
-                      )}
-                      {type === "rating" && (
-                        <div className="mb-4">
-                          <label
-                            className="block text-gray-700 text-sm font-bold mb-2"
-                            htmlFor="name"
-                          >
-                            Max
-                          </label>
-                          <input
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="name"
-                            name="name"
-                            type="number"
-                            // value={name}
-                            required
-                            onChange={(e) => setMax(e.target.value)}
-                          />
-                        </div>
-                      )}
-                      <div className="flex justify-end">
-                        <button
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                          type="submit"
-                        >
-                          Submit
-                        </button>
-                      </div>
                     </form>
                   </Modal>
                 </tr>
