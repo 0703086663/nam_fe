@@ -1,14 +1,15 @@
 import React, { useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Navigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
 
 const AuthGuard = ({ children }) => {
-  const { isAuthenticated } = useContext(AuthContext);
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />; // Redirect to login on unauthorized access
+  const { currentUser, isAuthenticated } = useContext(AuthContext);
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
   }
 
-  return <>{children}</>; // Render wrapped component if authorized
+  return <>{children}</>;
 };
 
 export default AuthGuard;

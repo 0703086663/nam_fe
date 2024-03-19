@@ -18,10 +18,14 @@ import "./index.css";
 import AuthProvider from "./auth/AuthProvider";
 import AuthContext from "./auth/AuthContext";
 import AuthGuard from "./auth/Authorize";
+import Header from "./components/Header";
 
 export default function App() {
+  const { currentUser } = useContext(AuthContext);
+
   return (
     <BrowserRouter>
+      {currentUser && <Header />}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
