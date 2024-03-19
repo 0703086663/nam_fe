@@ -12,6 +12,7 @@ import AuthProvider from "./auth/AuthProvider";
 import AuthContext from "./auth/AuthContext";
 import AuthGuard from "./auth/Authorize";
 import Header from "./components/Header";
+import Question from "./pages/Question";
 
 export default function App() {
   const { currentUser } = useContext(AuthContext);
@@ -35,6 +36,14 @@ export default function App() {
           element={
             <AuthGuard>
               <Field />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/question"
+          element={
+            <AuthGuard>
+              <Question />
             </AuthGuard>
           }
         />

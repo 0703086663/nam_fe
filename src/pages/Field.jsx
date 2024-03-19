@@ -203,12 +203,15 @@ const Field = () => {
                       <></>
                     ) : item.type == "rating" ? (
                       <>{item?.options?.max}</>
-                    ) : (
+                    ) : item.type == "singleSelect" ||
+                      item.type == "multiSelects" ? (
                       <ul className="list-disc">
-                        {item.options.choices.map((choice, index) => (
+                        {item.options?.choices.map((choice, index) => (
                           <li key={index}>{choice.name}</li>
                         ))}
                       </ul>
+                    ) : (
+                      <></>
                     )}
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4">
@@ -219,7 +222,7 @@ const Field = () => {
                         onClick={() =>
                           handleOpenModal("update", {
                             id: item._id,
-                            name: item.name,s
+                            name: item.name,
                             type: item.type,
                             options: {
                               choices:

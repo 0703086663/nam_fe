@@ -13,7 +13,7 @@ const Register = () => {
       body: JSON.stringify({ email, password, name }),
     });
 
-    if (response.data) {
+    if (response) {
       navigate(`/login`);
     }
 

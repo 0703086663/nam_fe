@@ -43,7 +43,7 @@ export async function updateData(url, data) {
   const currentUser = localStorage.getItem("authToken");
   try {
     const response = await fetch(url, {
-      method: "PATCH",
+      method: "PUT",
       body: JSON.stringify(data),
       headers: {
         Authorization: "Bearer " + JSON.parse(currentUser).token,

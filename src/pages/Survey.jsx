@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchData } from "../utils/fetchData";
+import { fetchData, updateData } from "../utils/fetchData";
 import { useLocation } from "react-router-dom";
 import Modal from "../components/Modal";
 import axios from "axios";
@@ -16,26 +16,28 @@ const Survey = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [updateId, setUpdateId] = useState("");
 
   const handleOpenModal = (data) => {
     setIsOpen(true);
     setName(data.name);
+    setUpdateId(data._id);
   };
   const handleCloseModal = () => {
     setIsOpen(false);
   };
 
-  const handleSubmit = async (event, id) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.put(`http://localhost:9999/api/survey/${id}`, {
+      await updateData(`http://localhost:9999/api/survey/${updateId}`, {
         name,
       });
       setLoading(true);
+      await fetchDataFromAPI();
     } catch (error) {
       alert("Error submitting. Try again later");
     }
-    await fetchDataFromAPI();
     handleCloseModal();
   };
 
@@ -121,7 +123,10 @@ const Survey = () => {
                       {item.fields && item.fields.length > 0 ? (
                         item.fields.map((field, index) => (
                           <li key={index}>
-                            <a href="#!" className="hover:text-blue-600">
+                            <a
+                              href={`/question?surveyId=${item._id}&fieldName=${field.name}`}
+                              className="hover:text-blue-600"
+                            >
                               {field.name}
                             </a>
                           </li>
@@ -161,7 +166,7 @@ const Survey = () => {
                         <FaEdit size={20} />
                       </button>
                       <Modal isOpen={isOpen} onClose={handleCloseModal}>
-                        <form onSubmit={(e) => handleSubmit(e, item._id)}>
+                        <form onSubmit={(e) => handleSubmit(e)}>
                           <div className="mb-4">
                             <label
                               className="block text-gray-700 text-sm font-bold mb-2"
