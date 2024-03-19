@@ -12,7 +12,8 @@ const Campaign = () => {
     const url = "http://localhost:9999/api/campaign";
     setLoading(true);
     const result = await fetchData(url);
-    setData(result.campaigns);
+    console.log("result", result);
+    setData(result?.campaigns);
     setLoading(false);
   };
 
