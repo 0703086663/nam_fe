@@ -4,12 +4,15 @@ import formatDate from "../utils/formatDate";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { FaTrashAlt } from "react-icons/fa";
+import { IoIosArrowForward } from "react-icons/io";
 
 const Response = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const surveyId = queryParams.get("surveyId");
   const surveyName = queryParams.get("surveyName");
+  const campaignId = queryParams.get("campaignId");
+  const campaignName = queryParams.get("campaignName");
 
   const [data, setData] = useState([]);
   const [fields, setFields] = useState([]);
@@ -59,8 +62,49 @@ const Response = () => {
 
   return (
     <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
-      <h1 className="pb-10 text-3xl font-semibold">Response Table</h1>
-      <h1 className="pb-2 text-lg text-gray-500">{surveyName}</h1>
+      <nav className="flex" aria-label="Breadcrumb">
+        <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+          <li className="inline-flex items-center">
+            <a
+              href="/"
+              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-blue-600"
+            >
+              Home
+            </a>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <span className="cursor-default ms-1 text-sm font-medium text-gray-500 md:ms-2">
+                Campaign ({campaignName})
+              </span>
+            </div>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <a
+                href={`/survey?campaignId=${campaignId}&campaignName=${campaignName}`}
+                className="ms-1 text-sm font-medium text-gray-500 md:ms-2 hover:text-blue-600"
+              >
+                Survey ({surveyName})
+              </a>
+            </div>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <span className="cursor-default ms-1 text-sm font-medium text-black md:ms-2">
+                Responses
+              </span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 className="py-5 text-center text-3xl font-semibold">
+        Response Table
+      </h1>
 
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto border border-gray-300">

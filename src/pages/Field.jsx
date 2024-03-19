@@ -4,12 +4,15 @@ import { fetchData } from "../utils/fetchData";
 import { FaEdit } from "react-icons/fa";
 import Modal from "../components/Modal";
 import axios from "axios";
+import { IoIosArrowForward } from "react-icons/io";
 
 const Field = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const surveyId = queryParams.get("surveyId");
   const surveyName = queryParams.get("surveyName");
+  const campaignId = queryParams.get("campaignId");
+  const campaignName = queryParams.get("campaignName");
 
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -122,9 +125,48 @@ const Field = () => {
 
   return (
     <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
-      <h1 className="pb-10 text-3xl font-semibold">Field Table</h1>
-      <div className="flex justify-between pb-2">
-        <h1 className="text-lg text-gray-500">{surveyName}</h1>
+      <nav className="flex" aria-label="Breadcrumb">
+        <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+          <li className="inline-flex items-center">
+            <a
+              href="/"
+              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-blue-600"
+            >
+              Home
+            </a>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <span className="cursor-default ms-1 text-sm font-medium text-gray-500 md:ms-2">
+                Campaign ({campaignName})
+              </span>
+            </div>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <a
+                href={`/survey?campaignId=${campaignId}&campaignName=${campaignName}`}
+                className="ms-1 text-sm font-medium text-gray-500 md:ms-2 hover:text-blue-600"
+              >
+                Survey ({surveyName})
+              </a>
+            </div>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <span className="cursor-default ms-1 text-sm font-medium text-black md:ms-2">
+                Fields
+              </span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 className="py-5 text-3xl font-semibold text-center">Field Table</h1>
+      <div className="flex flex-row-reverse pb-2">
         <button
           onClick={() => handleOpenModal("create")}
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

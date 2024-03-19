@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import Modal from "../components/Modal";
 import axios from "axios";
 import { FaListAlt, FaChartBar, FaEdit } from "react-icons/fa";
+import { IoIosArrowForward } from "react-icons/io";
 
 const Survey = () => {
   const location = useLocation();
@@ -54,8 +55,36 @@ const Survey = () => {
 
   return (
     <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
-      <h1 className="pb-10 text-3xl font-semibold">Survey Table</h1>
-      <h1 className="pb-2 text-lg text-gray-500">{campaignName}</h1>
+      <nav className="flex" aria-label="Breadcrumb">
+        <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+          <li className="inline-flex items-center">
+            <a
+              href="/"
+              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-blue-600"
+            >
+              Home
+            </a>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <span className="cursor-default ms-1 text-sm font-medium text-gray-500 md:ms-2">
+                Campaign ({campaignName})
+              </span>
+            </div>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <IoIosArrowForward className="text-gray-400" />
+              <span className="cursor-default ms-1 text-sm font-medium text-dark md:ms-2">
+                Survey
+              </span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 className="py-5 text-center text-3xl font-semibold">Survey Table</h1>
 
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto border border-gray-300">
@@ -63,6 +92,12 @@ const Survey = () => {
             <tr className="bg-gray-2 text-left">
               <th className="min-w-[220px] py-4 px-4 font-medium text-black xl:pl-11">
                 Name
+              </th>
+              <th className="py-4 px-4 font-medium text-black xl:pl-11">
+                Count response
+              </th>
+              <th className="py-4 px-4 font-medium text-black xl:pl-11">
+                Fields
               </th>
               <th className="py-4 px-4 font-medium text-black">Actions</th>
             </tr>
@@ -74,10 +109,28 @@ const Survey = () => {
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11">
                     <h5 className="text-black">{item.name}</h5>
                   </td>
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11">
+                    <h5 className="text-black">{item.countResponse}</h5>
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11">
+                    <ul className="space-y-1 list-disc list-inside">
+                      {item.fields && item.fields.length > 0 ? (
+                        item.fields.map((field, index) => (
+                          <li key={index}>
+                            <a href="#!" className="hover:text-blue-600">
+                              {field.name}
+                            </a>
+                          </li>
+                        ))
+                      ) : (
+                        <></>
+                      )}
+                    </ul>
+                  </td>
                   <td className="border-b border-[#eee] py-5 px-4">
                     <div className="flex items-center space-x-3.5">
                       <a
-                        href={`/field?surveyId=${item._id}&surveyName=${item.name}`}
+                        href={`/field?surveyId=${item._id}&surveyName=${item.name}&campaignId=${campaignId}&campaignName=${campaignName}`}
                       >
                         <button
                           className="hover:scale-125 text-gray-500 transition-all hover:text-green-600"
@@ -87,7 +140,7 @@ const Survey = () => {
                         </button>
                       </a>
                       <a
-                        href={`/response?surveyId=${item._id}&surveyName=${item.name}`}
+                        href={`/response?surveyId=${item._id}&surveyName=${item.name}&campaignId=${campaignId}&campaignName=${campaignName}`}
                       >
                         <button
                           className="hover:scale-125 text-gray-500 transition-all hover:text-blue-500"

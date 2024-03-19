@@ -1,13 +1,6 @@
-import { useState, StrictMode, useContext } from "react";
+import { useContext } from "react";
 import ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
-import Layout from "./pages/Layout";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Campaign from "./pages/Campaign";
 import Field from "./pages/Field";
 import Response from "./pages/Response";
