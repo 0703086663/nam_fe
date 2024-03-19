@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { fetchData } from "../utils/fetchData";
+import { fetchData, createData } from "../utils/fetchData";
 import { FaEdit } from "react-icons/fa";
 import Modal from "../components/Modal";
 import axios from "axios";
@@ -23,23 +23,18 @@ const Field = () => {
   const [options, setOptions] = useState([]);
   const [idUpdate, setIdUpdate] = useState("");
   const [loading, setLoading] = useState(true);
+  const [optionCustom, setOptionCustom] = useState([""]);
+  const [max, setMax] = useState(0);
 
-  const handleCheckboxChange = (e) => {
-    const value = e.target.value;
-    const isChecked = e.target.checked;
+  const addOption = (e) => {
+    e.preventDefault();
+    setOptionCustom([...optionCustom, ""]);
+  };
 
-    const updatedOptions = [...options];
-
-    if (isChecked) {
-      updatedOptions.push(value);
-    } else {
-      const index = updatedOptions.indexOf(value);
-      if (index !== -1) {
-        updatedOptions.splice(index, 1);
-      }
-    }
-
-    setOptions(updatedOptions);
+  const handleOptionChange = (index, value) => {
+    const newOptions = [...optionCustom];
+    newOptions[index] = value;
+    setOptionCustom(newOptions);
   };
 
   const handleChangeType = (e) => {
@@ -68,6 +63,7 @@ const Field = () => {
   };
   const handleCloseModal = () => {
     setIsOpen(false);
+    setOptionCustom([""]);
     setIsShownOptions(false);
   };
 
@@ -79,32 +75,30 @@ const Field = () => {
         let requestBody = {
           name,
           type,
-          ...(type === "singleSelect" && options.length > 0 && { options }),
+          ...(type !== "singleLineText" &&
+            optionCustom.length > 0 && { options: optionCustom }),
+
+          ...(type === "rating" && {
+            options: {
+              choices: {
+                icon: "start",
+                max,
+              },
+            },
+          }),
         };
 
-        await axios.post(
+        console.log("requestBody=====>", requestBody);
+        await createData(
           `http://localhost:9999/api/field/create/${surveyId}`,
-          requestBody
-        );
-      } else if (method === "update") {
-        let requestBody = {
-          name,
-        };
-
-        await axios.put(
-          `http://localhost:9999/api/field/${idUpdate}`,
           requestBody
         );
       } else {
         throw new Error("Method undefined");
       }
-
-      alert("Successful");
       await fetchDataFromAPI();
-    } catch (error) {
-      alert("Create failed. Try again later");
-    }
-
+    } catch (error) {}
+    setOptionCustom([""]);
     handleCloseModal();
   };
 
@@ -205,8 +199,10 @@ const Field = () => {
                     <h5 className="text-black">{item.type && item.type}</h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11">
-                    {item.type !== "singleSelect" ? (
+                    {item.type == "singleLineText" ? (
                       <></>
+                    ) : item.type == "rating" ? (
+                      <>{item?.options?.max}</>
                     ) : (
                       <ul className="list-disc">
                         {item.options.choices.map((choice, index) => (
@@ -223,7 +219,7 @@ const Field = () => {
                         onClick={() =>
                           handleOpenModal("update", {
                             id: item._id,
-                            name: item.name,
+                            name: item.name,s
                             type: item.type,
                             options: {
                               choices:
@@ -280,15 +276,10 @@ const Field = () => {
                               <option value="singleLineText">
                                 Single Line Text
                               </option>
-                              <option value="multilineText">
-                                Multi Line Text
-                              </option>
-                              <option value="singleCollaborator">
-                                Single Collaborator
-                              </option>
                               <option value="singleSelect">
                                 Single Select
                               </option>
+                              <option value="rating">Rating</option>
                             </select>
                           </div>
                         </>
@@ -305,58 +296,41 @@ const Field = () => {
                             className="overflow-y-auto text-sm text-gray-700"
                             aria-labelledby="dropdownSearchButton"
                           >
-                            <li>
-                              <div className="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer">
-                                <input
-                                  id="todo-checkbox"
-                                  type="checkbox"
-                                  value="Todo"
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer"
-                                  onChange={handleCheckboxChange}
-                                />
-                                <label
-                                  htmlFor="todo-checkbox"
-                                  className="w-full ms-2 text-sm font-medium text-gray-900 rounded select-none cursor-pointer"
-                                >
-                                  Todo
-                                </label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer">
-                                <input
-                                  id="in-progress-checkbox"
-                                  type="checkbox"
-                                  value="In progress"
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer"
-                                  onChange={handleCheckboxChange}
-                                />
-                                <label
-                                  htmlFor="in-progress-checkbox"
-                                  className="w-full ms-2 text-sm font-medium text-gray-900 rounded select-none cursor-pointer"
-                                >
-                                  In progress
-                                </label>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer">
-                                <input
-                                  id="done-checkbox"
-                                  type="checkbox"
-                                  value="Done"
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded cursor-pointer"
-                                  onChange={handleCheckboxChange}
-                                />
-                                <label
-                                  htmlFor="done-checkbox"
-                                  className="w-full ms-2 text-sm font-medium text-gray-900 rounded select-none cursor-pointer"
-                                >
-                                  Done
-                                </label>
-                              </div>
-                            </li>
+                            {optionCustom.map((option, index) => (
+                              <li key={index}>
+                                <div className="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer">
+                                  <input
+                                    type="text"
+                                    value={optionCustom.label}
+                                    onChange={(e) =>
+                                      handleOptionChange(index, e.target.value)
+                                    }
+                                    className=" shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                  />
+                                </div>
+                              </li>
+                            ))}
                           </ul>
+                          <button onClick={addOption}>Add Option</button>
+                        </div>
+                      )}
+                      {type === "rating" && (
+                        <div className="mb-4">
+                          <label
+                            className="block text-gray-700 text-sm font-bold mb-2"
+                            htmlFor="name"
+                          >
+                            Max
+                          </label>
+                          <input
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="name"
+                            name="name"
+                            type="number"
+                            // value={name}
+                            required
+                            onChange={(e) => setMax(e.target.value)}
+                          />
                         </div>
                       )}
                       <div className="flex justify-end">

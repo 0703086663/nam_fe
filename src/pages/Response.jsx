@@ -141,9 +141,11 @@ const Response = () => {
                     {formatDate(item.createdTime)}
                   </td>
                   {fields.map((field, index) => {
-                    const matchingKey = Object.keys(item.fields).find(
-                      (key) => field.name === key
-                    );
+                    const matchingKey =
+                      item.fields &&
+                      Object.keys(item?.fields).find(
+                        (key) => field.name === key
+                      );
                     if (matchingKey !== undefined) {
                       let value = item.fields[matchingKey];
                       if (typeof value === "object") {
