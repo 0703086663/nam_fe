@@ -15,6 +15,7 @@ const Survey = () => {
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const handleOpenModal = (data) => {
     setIsOpen(true);
@@ -30,6 +31,7 @@ const Survey = () => {
       await axios.put(`http://localhost:9999/api/survey/${id}`, {
         name,
       });
+      setLoading(true);
     } catch (error) {
       alert("Error submitting. Try again later");
     }
@@ -41,8 +43,10 @@ const Survey = () => {
     if (campaignId) {
       const url = `http://localhost:9999/api/survey/all/${campaignId}`;
 
+      setLoading(true);
       const result = await fetchData(url);
       setData(result.surveys || []);
+      setLoading(false);
     } else {
       return setData([]);
     }
@@ -191,19 +195,22 @@ const Survey = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="2"
-                  className="border-b border-[#eee] py-5 px-4 text-center"
-                >
-                  <p>
-                    There is no survey.{" "}
-                    <a
-                      href="/"
-                      className="text-blue-500 hover:underline underline-offset-2"
-                    >
-                      Choose one Campaign to see
-                    </a>
-                  </p>
+                <td colSpan="4" className="border-b border-[#eee] py-5 px-4">
+                  <div className="flex flex-col items-center justify-center">
+                    {loading ? (
+                      <img src="/loading.gif" alt="" />
+                    ) : (
+                      <p>
+                        There is no survey.{" "}
+                        <a
+                          href="/"
+                          className="text-blue-500 hover:underline underline-offset-2"
+                        >
+                          Choose one Campaign to see
+                        </a>
+                      </p>
+                    )}
+                  </div>
                 </td>
               </tr>
             )}

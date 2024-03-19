@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import { fetchData } from "../utils/fetchData";
 import { FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { IoIosArrowForward } from "react-icons/io";
 
 const Campaign = () => {
-  const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const fetchDataFromAPI = async () => {
     const url = "http://localhost:9999/api/campaign";
+    setLoading(true);
     const result = await fetchData(url);
     setData(result.campaigns);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -65,11 +68,14 @@ const Campaign = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="2"
-                  className="border-b border-[#eee] py-5 px-4 text-center"
-                >
-                  <p>There is no campaign</p>
+                <td colSpan="3" className="border-b border-[#eee] py-5 px-4">
+                  <div className="flex flex-col items-center justify-center">
+                    {loading ? (
+                      <img src="/loading.gif" alt="" />
+                    ) : (
+                      <p>There is no campaign</p>
+                    )}
+                  </div>
                 </td>
               </tr>
             )}

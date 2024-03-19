@@ -16,13 +16,15 @@ const Response = () => {
 
   const [data, setData] = useState([]);
   const [fields, setFields] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchReponseFromAPI = async () => {
     if (surveyId) {
+      setLoading(true);
       const url = `http://localhost:9999/api/response/all/${surveyId}`;
       const result = await fetchData(url);
-      console.log("Response", result.responses);
       setData(result.responses || []);
+      setLoading(false);
     } else {
       return setData([]);
     }
@@ -30,10 +32,11 @@ const Response = () => {
 
   const fetchFieldsFromAPI = async () => {
     if (surveyId) {
+      setLoading(true);
       const url = `http://localhost:9999/api/survey/${surveyId}`;
       const result = await fetchData(url);
-      console.log("Fields", result.fields);
       setFields(result.fields || []);
+      setLoading(false);
     } else {
       return setFields([]);
     }
@@ -110,6 +113,7 @@ const Response = () => {
         <table className="w-full table-auto border border-gray-300">
           <thead className="border-b bg-slate-50">
             <tr className="bg-gray-2 text-left">
+              <th className="py-4 px-4 font-medium text-black">Created At</th>
               {fields &&
                 fields.length > 0 &&
                 fields.map((field, index) => (
@@ -117,7 +121,13 @@ const Response = () => {
                     className="min-w-[220px] py-4 px-4 font-medium text-black xl:pl-11"
                     key={index}
                   >
-                    {field.name}
+                    {/* TODO */}
+                    <a
+                      href="#!"
+                      className="hover:underline hover:text-blue-600 ring-offset-4"
+                    >
+                      {field.name}
+                    </a>
                   </th>
                 ))}
               <th className="py-4 px-4 font-medium text-black">Actions</th>
@@ -127,6 +137,9 @@ const Response = () => {
             {data && data.length > 0 ? (
               data.map((item, index) => (
                 <tr key={index}>
+                  <td key={index} className="border-b border-[#eee] py-5 px-4">
+                    {formatDate(item.createdTime)}
+                  </td>
                   {fields.map((field, index) => {
                     const matchingKey = Object.keys(item.fields).find(
                       (key) => field.name === key
@@ -134,19 +147,22 @@ const Response = () => {
                     if (matchingKey !== undefined) {
                       let value = item.fields[matchingKey];
                       if (typeof value === "object") {
-                        // Handle object value
-                        // For example, convert it to a string
                         value = Object.keys(value)
                           .filter((key) => key !== "id")
-                          .map((key) => `${key}: ${value[key]}`)
-                          .join("\n");
+                          .map((key) => `• ${value[key]}`)
+                          .join("<br>");
+
+                        console.log(value);
                       }
                       return (
                         <td
                           key={index}
                           className="border-b border-[#eee] py-5 px-4 pl-9 xl:pl-11"
                         >
-                          <h5 className="text-black">{value.toString()}</h5>
+                          <p
+                            className="text-black"
+                            dangerouslySetInnerHTML={{ __html: value }}
+                          ></p>
                         </td>
                       );
                     } else {
@@ -173,19 +189,14 @@ const Response = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="8"
-                  className="border-b border-[#eee] py-5 px-4 text-center"
-                >
-                  <p>
-                    There is no response.{" "}
-                    <a
-                      href="/survey"
-                      className="text-blue-500 hover:underline underline-offset-2"
-                    >
-                      Choose one Survey to see
-                    </a>
-                  </p>
+                <td colSpan="8" className="border-b border-[#eee] py-5 px-4">
+                  <div className="flex flex-col items-center justify-center">
+                    {loading ? (
+                      <img src="/loading.gif" alt="" />
+                    ) : (
+                      <p>There is no response.</p>
+                    )}
+                  </div>
                 </td>
               </tr>
             )}

@@ -22,6 +22,7 @@ const Field = () => {
   const [isShownOptions, setIsShownOptions] = useState(false);
   const [options, setOptions] = useState([]);
   const [idUpdate, setIdUpdate] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const handleCheckboxChange = (e) => {
     const value = e.target.value;
@@ -111,8 +112,10 @@ const Field = () => {
     if (surveyId) {
       const url = `http://localhost:9999/api/survey/${surveyId}`;
 
+      setLoading(true);
       const result = await fetchData(url);
       setData(result.fields || []);
+      setLoading(false);
     } else {
       return setData([]);
     }
@@ -370,19 +373,14 @@ const Field = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="2"
-                  className="border-b border-[#eee] py-5 px-4 text-center"
-                >
-                  <p>
-                    There is no fields.{" "}
-                    <a
-                      href="/survey"
-                      className="text-blue-500 hover:underline underline-offset-2"
-                    >
-                      Choose one Survey to see
-                    </a>
-                  </p>
+                <td colSpan="4" className="border-b border-[#eee] py-5 px-4">
+                  <div className="flex flex-col items-center justify-center">
+                    {loading ? (
+                      <img src="/loading.gif" alt="" />
+                    ) : (
+                      <p>There is no response.</p>
+                    )}
+                  </div>
                 </td>
               </tr>
             )}
